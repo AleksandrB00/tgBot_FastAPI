@@ -1,0 +1,21 @@
+GET CONNECTION FROM THE LOCAL POOL
+SELECT "user"."id", "user"."user_id", "user"."nick", "user"."age"
+FROM "user" "user"
+WHERE 0 = 1
+
+SELECT "wallet"."id", "wallet"."address", "wallet"."private_key", "wallet"."owner"
+FROM "wallet" "wallet"
+WHERE 0 = 1
+
+COMMIT
+CLOSE CONNECTION
+GET NEW CONNECTION
+SWITCH TO AUTOCOMMIT MODE
+SELECT "u"."id", COUNT(DISTINCT "wallet"."id")
+FROM "user" "u"
+  LEFT JOIN "wallet" "wallet"
+    ON "u"."id" = "wallet"."owner"
+GROUP BY "u"."id"
+
+[(User[13], 0), (User[14], 1), (User[15], 1)]
+RELEASE CONNECTION
