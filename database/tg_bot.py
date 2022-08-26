@@ -88,6 +88,8 @@ user_count = 4
 def all_users(message):
     global current_page
     global total_pages
+    current_page = 1
+    user_count = 4
     text = 'Пользователи:'
     inline_markup = telebot.types.InlineKeyboardMarkup()
     for user in users[:4]:
@@ -95,8 +97,10 @@ def all_users(message):
             text=user['name'],
             callback_data=f'user_{user["id"]}'
         ))
-    inline_markup.add(telebot.types.InlineKeyboardButton(text='Вперёд', callback_data='next_page'))
-    inline_markup.add(telebot.types.InlineKeyboardButton(text=f'{current_page}/{total_pages}', callback_data='None'))
+    inline_markup.row(
+        telebot.types.InlineKeyboardButton(text=f'{current_page}/{total_pages}', callback_data='None'),
+        telebot.types.InlineKeyboardButton(text='Вперёд', callback_data='next_page')
+    )
     bot.send_message(message.chat.id, text, reply_markup=inline_markup)
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -115,8 +119,10 @@ def callback_query(call):
             text=user['name'],
             callback_data=f'user_{user["id"]}'
         ))
-            inline_markup.add(telebot.types.InlineKeyboardButton(text='Назад', callback_data='prev_page'))
-            inline_markup.add(telebot.types.InlineKeyboardButton(text=f'{current_page}/{total_pages}', callback_data='None'))
+            inline_markup.row(
+                telebot.types.InlineKeyboardButton(text=f'{current_page}/{total_pages}', callback_data='None'),
+                telebot.types.InlineKeyboardButton(text='Назад', callback_data='prev_page')
+            )
             bot.edit_message_text(text="Пользователи:",
                               chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
@@ -127,9 +133,11 @@ def callback_query(call):
             text=user['name'],
             callback_data=f'user_{user["id"]}'
         ))
-        inline_markup.add(telebot.types.InlineKeyboardButton(text='Вперёд', callback_data='next_page'))
-        inline_markup.add(telebot.types.InlineKeyboardButton(text='Назад', callback_data='prev_page'))
-        inline_markup.add(telebot.types.InlineKeyboardButton(text=f'{current_page}/{total_pages}', callback_data='None'))
+        inline_markup.row(
+            telebot.types.InlineKeyboardButton(text='Назад', callback_data='prev_page'),
+            telebot.types.InlineKeyboardButton(text=f'{current_page}/{total_pages}', callback_data='None'),
+            telebot.types.InlineKeyboardButton(text='Вперёд', callback_data='next_page')
+        )
         bot.edit_message_text(text="Пользователи:",
                               chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
@@ -144,8 +152,10 @@ def callback_query(call):
                 text=user['name'],
                 callback_data=f'user_{user["id"]}'
                 ))
-            inline_markup.add(telebot.types.InlineKeyboardButton(text='Вперёд', callback_data='next_page'))
-            inline_markup.add(telebot.types.InlineKeyboardButton(text=f'{current_page}/{total_pages}', callback_data='None'))
+            inline_markup.row(
+                telebot.types.InlineKeyboardButton(text=f'{current_page}/{total_pages}', callback_data='None'),
+                telebot.types.InlineKeyboardButton(text='Вперёд', callback_data='next_page')
+            )
             bot.edit_message_text(text="Пользователи:",
                               chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
@@ -156,9 +166,11 @@ def callback_query(call):
             text=user['name'],
             callback_data=f'user_{user["id"]}'
             ))
-        inline_markup.add(telebot.types.InlineKeyboardButton(text='Вперёд', callback_data='next_page'))
-        inline_markup.add(telebot.types.InlineKeyboardButton(text='Назад', callback_data='prev_page'))
-        inline_markup.add(telebot.types.InlineKeyboardButton(text=f'{current_page}/{total_pages}', callback_data='None'))
+        inline_markup.row(
+            telebot.types.InlineKeyboardButton(text='Назад', callback_data='prev_page'),
+            telebot.types.InlineKeyboardButton(text=f'{current_page}/{total_pages}', callback_data='None'),
+            telebot.types.InlineKeyboardButton(text='Вперёд', callback_data='next_page'),
+        )
         bot.edit_message_text(text="Пользователи:",
                               chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
