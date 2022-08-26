@@ -79,20 +79,54 @@ def print_me(message):
     bot.send_message(message.chat.id, text, reply_markup=markup)
 
 users = config.fake_database['users']
+results_on_page = 4
+lenght = len(users)
+count = 4
 
 @bot.message_handler(func=lambda message: message.from_user.id == config.tg_bot_admin and message.text == 'Все пользователи')
 def all_users(message):
     text = 'Пользователи:'
     inline_markup = telebot.types.InlineKeyboardMarkup()
-    for user in users:
+    for user in users[:results_on_page]:
         inline_markup.add(telebot.types.InlineKeyboardButton(
             text=user['name'],
             callback_data=f'user_{user["id"]}'
-        ))
+        ),telebot.types.InlineKeyboardButton(text='Следующая', callback_data='next'))
     bot.send_message(message.chat.id, text, reply_markup=inline_markup)
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
+    query_type = call.data
+    if query_type == 'next' or query_type == 'prev':
+        global count
+        count += 4
+        inline_markup = telebot.types.InlineKeyboardMarkup()
+        if count <= lenght:
+            for user in users[results_on_page:results_on_page+4]:
+                inline_markup.add(telebot.types.InlineKeyboardButton(
+                text=user['name'],
+                callback_data=f'user_{user["id"]}'
+                ), telebot.types.InlineKeyboardButton(text='Следующая', callback_data='next'))
+            bot.edit_message_text(
+                text='Пользователи:',
+                chat_id=call.message.chat.id,
+                message_id=call.message.message_id,
+                reply_markup=inline_markup
+            )
+        if count > lenght:
+            last_page = count - 4
+            for user in users[last_page:lenght + 1]:
+                inline_markup.add(telebot.types.InlineKeyboardButton(
+                text=user['name'],
+                callback_data=f'user_{user["id"]}'
+                ))
+            bot.edit_message_text(
+                text='Пользователи:',
+                chat_id=call.message.chat.id,
+                message_id=call.message.message_id,
+                reply_markup=inline_markup
+            )
+
     query_type = call.data.split('_')[0]
     if query_type == 'user':
         user_id = call.data.split('_')[1]
@@ -118,9 +152,9 @@ def callback_query(call):
         inline_markup = telebot.types.InlineKeyboardMarkup()
         for user in users:
             inline_markup.add(telebot.types.InlineKeyboardButton(
-                text=user["name"]),
+                text=user["name"],
                 callback_data=f'user_{user["id"]}'
-            )
+            ))
         bot.edit_message_text(
             text='Пользователи:',
             chat_id=call.message.chat.id,
