@@ -58,7 +58,7 @@ def print_me(message):
     text = f'Ты: {message.from_user.to_dict()}'
     bot.send_message(message.chat.id, text, reply_markup=markup)
 
-@bot.message_handler(func=lambda message: message.from_user.id == config.tg_bot_admin and message.text == "Админка")
+@bot.message_handler(func=lambda message: message.from_user.id in config.tg_bot_admin and message.text == "Админка")
 def admin_panel(message):
     markup = telebot.types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
     btn1 = telebot.types.KeyboardButton('Общий баланс')
@@ -84,7 +84,7 @@ current_page = 1
 user_count = 4
 
 
-@bot.message_handler(func=lambda message: message.from_user.id == config.tg_bot_admin and message.text == 'Все пользователи')
+@bot.message_handler(func=lambda message: message.from_user.id in config.tg_bot_admin and message.text == 'Все пользователи')
 def all_users(message):
     global current_page
     global total_pages
@@ -229,7 +229,7 @@ def callback_query(call):
                               message_id=call.message.message_id,
                               reply_markup=inline_markup)
 
-@bot.message_handler(func=lambda message: message.from_user.id == config.tg_bot_admin and message.text == 'Общий баланс')
+@bot.message_handler(func=lambda message: message.from_user.id in config.tg_bot_admin and message.text == 'Общий баланс')
 def total_balance(message):
     markup = telebot.types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
     btn1 = telebot.types.KeyboardButton('Меню')
